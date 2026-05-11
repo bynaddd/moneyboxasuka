@@ -1,0 +1,463 @@
+/* Root Variables for Soft Colors & Design System */
+:root {
+    --bg-app: #f4f7fa; /* Soft light gray-blue background */
+    --surface: #ffffff;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    
+    /* Soft Colors */
+    --primary: #3b82f6; /* Soft Blue */
+    --primary-light: #eff6ff;
+    --primary-gradient: linear-gradient(135deg, #60a5fa, #3b82f6);
+    
+    --success: #10b981; /* Soft Green */
+    --success-light: #d1fae5;
+    
+    --danger: #ef4444; /* Soft Red for expenses */
+    --danger-light: #fee2e2;
+    
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    
+    --border: #e2e8f0;
+    
+    /* Spacing & Radii */
+    --radius-card: 24px;
+    --radius-sm: 12px;
+    --radius-lg: 32px;
+    
+    /* Shadows */
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.04);
+    --shadow-header: 0 10px 30px rgba(59, 130, 246, 0.15);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-app);
+    color: var(--text-dark);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+    max-width: 480px; /* Mobile app feel */
+    margin: 0 auto;
+    background-color: var(--bg-app);
+    min-height: 100vh;
+    padding-bottom: 40px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ================= HEADER ================= */
+.app-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 32px 24px 64px 24px; /* extra bottom padding for overlap */
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+    box-shadow: var(--shadow-header);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-text h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 300;
+}
+
+.profile-pic img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    object-fit: cover;
+}
+
+/* ================= MAIN CONTENT ================= */
+.app-main {
+    padding: 0 20px;
+    margin-top: -36px; /* Overlap header */
+}
+
+/* Base Card Style */
+.card {
+    background: var(--surface);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 20px;
+}
+
+/* Typography inside cards */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* ================= 1. BALANCE SECTION ================= */
+.main-balance-card {
+    text-align: center;
+    padding: 28px 20px;
+}
+
+.main-balance-card h2 {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.balance-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 8px 0;
+    letter-spacing: -1px;
+}
+
+.balance-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.balance-indicator.positive {
+    background-color: var(--success-light);
+    color: var(--success);
+}
+
+/* Secondary Balances (In / Out) */
+.secondary-balances {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.mini-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    margin-bottom: 0;
+    border-radius: var(--radius-card);
+}
+
+.card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.card-icon.income {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.card-icon.expense {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.card-info p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.card-info h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+/* ================= 2. CHART SECTION ================= */
+.chart-container {
+    height: 180px;
+    width: 100%;
+}
+
+/* ================= 3. COMPOSITION SECTION ================= */
+.composition-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.comp-item {
+    width: 100%;
+}
+
+.comp-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.comp-labels span {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.comp-labels .comp-value {
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.progress-bg {
+    width: 100%;
+    height: 12px;
+    background: var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 12px;
+    transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.progress-fill.primary {
+    background: var(--primary-gradient);
+}
+
+.progress-fill.secondary {
+    background: var(--success);
+}
+
+/* ================= 4. LEADERBOARD SECTION ================= */
+.leaderboard-list {
+    list-style: none;
+}
+
+.leader-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.leader-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.leader-item.highlight {
+    background: var(--primary-light);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border-bottom: none;
+    margin: 8px -12px;
+}
+
+.leader-rank {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-right: 16px;
+    color: var(--text-muted);
+}
+
+/* Colors for top 3 */
+.leader-rank.rank-1 { background: #fef08a; color: #854d0e; }
+.leader-rank.rank-2 { background: #e2e8f0; color: #475569; }
+.leader-rank.rank-3 { background: #fed7aa; color: #9a3412; }
+
+.leader-info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.leader-info h4 {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.leader-info p {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.leader-item.highlight .leader-info h4,
+.leader-item.highlight .leader-info p {
+    color: var(--primary);
+}
+
+/* ================= 5. HISTORY SECTION ================= */
+.view-all {
+    font-size: 0.85rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.history-group {
+    margin-bottom: 24px;
+}
+
+.history-group:last-child {
+    margin-bottom: 0;
+}
+
+.group-date {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.history-item:last-child {
+    margin-bottom: 0;
+}
+
+.hist-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    font-size: 1.1rem;
+}
+
+.hist-icon.success { background: var(--success-light); color: var(--success); }
+.hist-icon.danger { background: var(--danger-light); color: var(--danger); }
+
+.hist-details {
+    flex: 1;
+}
+
+.hist-details h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 2px;
+}
+
+.hist-details p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.hist-amount {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.hist-amount.positive { color: var(--success); }
+.hist-amount.negative { color: var(--text-dark); } /* Negative can be dark or red, keeping dark for elegance */
+
+/* ================= ANIMATIONS ================= */
+.fade-in {
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================= DESKTOP RESPONSIVE ================= */
+/* If opened on a wide screen, make it look like a nice floating app window */
+@media (min-width: 768px) {
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #e2e8f0;
+        padding: 40px 0;
+    }
+    
+    .app-container {
+        border-radius: 40px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        border: 8px solid #f1f5f9;
+        height: 90vh;
+        overflow-y: auto;
+    }
+    
+    /* Custom Scrollbar for container */
+    .app-container::-webkit-scrollbar {
+        width: 6px;
+    }
+    .app-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .app-container::-webkit-scrollbar-thumb {
+        background: rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+}

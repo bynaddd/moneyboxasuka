@@ -1,0 +1,16 @@
+{
+  "name": "dashboard-money-box",
+  "version": "1.0.0",
+  "description": "Dashboard Investasi Karyawan - Money Box",
+  "private": true,
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "googleapis": "^131.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "vercel": "^51.8.0"
+  }
+}
