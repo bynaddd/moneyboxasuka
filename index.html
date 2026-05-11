@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Box - Dashboard Investasi Karyawan</title>
+<meta name="description" content="Dashboard investasi karyawan Money Box - Kelola dan pantau investasi dengan mudah">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<!-- LOGIN OVERLAY -->
+<div id="loginOverlay" class="login-overlay">
+  <div class="login-container">
+    <div class="login-left">
+      <div class="login-brand">
+        <div class="brand-icon"><i class="fas fa-piggy-bank"></i></div>
+        <span class="brand-text">MoneyBox</span>
+      </div>
+      <h2 class="login-title">Dashboard Investasi Terpercaya</h2>
+      <p class="login-desc">Kelola dan pantau pertumbuhan dana karyawan dengan transparansi penuh dan analisis cerdas.</p>
+      <div style="margin-top: auto; color: rgba(255,255,255,0.3); font-size: 0.8rem; font-weight: 600; letter-spacing: 1px;">VERSION 2.0 • 2026</div>
+    </div>
+    <div class="login-right">
+      <div id="loginChoice" class="login-choice">
+        <h3 class="login-title" style="font-size: 1.8rem; margin-bottom: 8px;">Selamat Datang</h3>
+        <p class="login-desc" style="margin-bottom: 32px;">Silakan pilih metode akses Anda</p>
+        
+        <div class="choice-card" id="btnGuestLogin">
+          <div class="choice-icon"><i class="fas fa-user"></i></div>
+          <div class="choice-info">
+            <h4>Masuk sebagai Tamu</h4>
+            <p>Akses terbatas (Lihat Dashboard & Karyawan)</p>
+          </div>
+        </div>
+        
+        <div class="choice-card" id="btnShowAdminLogin">
+          <div class="choice-icon" style="background: rgba(79, 70, 229, 0.2);"><i class="fas fa-user-shield"></i></div>
+          <div class="choice-info">
+            <h4>Masuk sebagai Admin</h4>
+            <p>Akses penuh (Update Data & Anomali)</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="adminLoginForm" class="login-form-area">
+        <button id="btnBackToChoice" class="back-to-choice"><i class="fas fa-arrow-left"></i> Kembali</button>
+        <h3 class="login-title" style="font-size: 1.8rem; margin-bottom: 8px;">Login Admin</h3>
+        <p class="login-desc" style="margin-bottom: 32px;">Masukkan kredensial Anda untuk akses penuh</p>
+        
+        <div class="login-input-group">
+          <label>Email Address</label>
+          <input type="email" id="loginEmail" class="login-input" placeholder="admin@moneybox.com">
+        </div>
+        
+        <div class="login-input-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" class="login-input" placeholder="••••••••">
+        </div>
+        
+        <button id="btnLoginAdmin" class="btn btn-primary btn-login-submit">Masuk Sekarang</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><i class="fas fa-piggy-bank"></i></div>
+    <span class="brand-text">MoneyBox</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+      <i class="fas fa-th-large"></i><span>Dashboard</span>
+    </a>
+    <a href="#" class="nav-item" data-page="karyawan" id="nav-karyawan">
+      <i class="fas fa-user"></i><span>Per Karyawan</span>
+    </a>
+    <a href="#" class="nav-item" data-page="transaksi" id="nav-transaksi">
+      <i class="fas fa-exchange-alt"></i><span>Transaksi</span>
+    </a>
+    <a href="#" class="nav-item" data-page="analytics" id="nav-analytics">
+      <i class="fas fa-chart-line"></i><span>Analytics</span>
+    </a>
+    <a href="#" class="nav-item" data-page="admin" id="nav-admin">
+      <i class="fas fa-file-import"></i><span>Update Data</span>
+    </a>
+    <a href="#" class="nav-item" data-page="anomali" id="nav-anomali">
+      <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i><span>Transaksi Mencurigakan</span>
+    </a>
+    <a href="#" class="nav-item" id="btnLogout" onclick="logout()">
+      <i class="fas fa-sign-out-alt"></i><span>Keluar</span>
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="interest-badge"><i class="fas fa-percentage"></i> Bunga 3%/thn</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main-content" id="mainContent">
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+    <div class="topbar-right" style="display:flex; align-items:center; gap:8px;">
+      <div style="display: flex; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; padding: 0 4px;">
+        <input type="date" id="globalStartDate" title="Mulai Tanggal" style="padding: 6px 4px; border: none; background: transparent; font-family: Inter; font-size: 0.85rem; color: #475569; outline: none; cursor: pointer;">
+        <span style="color:#94a3b8; font-size: 0.9rem; margin: 0 4px;">-</span>
+        <input type="date" id="globalEndDate" title="Sampai Tanggal" style="padding: 6px 4px; border: none; background: transparent; font-family: Inter; font-size: 0.85rem; color: #475569; outline: none; cursor: pointer;">
+      </div>
+      <select id="globalTypeFilter" style="padding: 6px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; font-family: Inter; font-size: 0.85rem; color: #475569; outline: none; cursor: pointer;">
+        <option value="">Semua Tipe</option>
+        <option value="Tabungan">Tabungan</option>
+        <option value="Penarikan">Penarikan</option>
+      </select>
+      <select id="topAnomaliStatusFilter" class="hidden" style="padding: 6px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; font-family: Inter; font-size: 0.85rem; color: #475569; outline: none; cursor: pointer;">
+        <option value="">Semua Status</option>
+        <option value="In Progress">Masih Progres</option>
+        <option value="Salah Orang">Koreksi</option>
+        <option value="Verified">Terbukti</option>
+      </select>
+      <button id="btnApplyFilter" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem; height: auto; display: flex; align-items: center; justify-content: center;"><i class="fas fa-search"></i></button>
+      <button id="btnExportExcel" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.85rem; height: auto;"><i class="fas fa-file-excel" style="color: #10b981;"></i> Export</button>
+      <span class="date-display" id="dateDisplay" style="margin-left:4px; font-size: 0.85rem; display: none;"></span>
+      <div id="reviewerEmailContainer" style="display: flex; align-items: center; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 8px; margin-right: 8px;">
+        <i class="fas fa-user-shield" style="color: #64748b; font-size: 0.8rem; margin-right: 8px;"></i>
+        <input type="email" id="reviewerEmail" placeholder="Email Reviewer" value="admin@moneybox.com" style="border: none; background: transparent; font-family: Inter; font-size: 0.85rem; color: #475569; outline: none; width: 150px; padding: 6px 0;">
+      </div>
+      <div id="userInfo" style="display: flex; align-items: center; gap: 8px; padding: 4px 12px; background: #f1f5f9; border-radius: 20px; font-weight: 600; font-size: 0.8rem; color: #475569;">
+        <i class="fas fa-user-circle"></i>
+        <span id="userNameDisplay">Memuat...</span>
+        <span id="userRoleBadge" class="badge-status status-progress" style="font-size: 0.65rem; padding: 2px 8px;">Tamu</span>
+      </div>
+      <div class="status-dot online"></div>
+    </div>
+  </header>
+
+  <!-- LOADING -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loader-ring"><div></div><div></div><div></div><div></div></div>
+    <p>Memuat data dari Google Sheets...</p>
+  </div>
+
+  <!-- PAGE: DASHBOARD -->
+  <section class="page active" id="page-dashboard" style="padding: 20px 40px;">
+    
+    <!-- 1 SCREEN NO-SCROLL CONTAINER -->
+    <div class="dashboard-one-screen" style="min-height: calc(100vh - 120px); display: flex; flex-direction: column;">
+        
+        <!-- 1. KPI SUMMARY (1 ROW, 6 CARDS) -->
+        <div class="kpi-row" id="summaryCards" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; margin-bottom: 16px;">
+            <!-- Rendered by JS -->
+        </div>
+
+        <!-- 2 & 3. CHARTS AREA (2x2 GRID) -->
+        <div class="charts-grid" style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 16px; margin-bottom: 16px; min-height: 400px;">
+            <!-- TREND DANA -->
+            <div class="chart-card compact-chart" style="display: flex; flex-direction: column; margin-bottom: 0;">
+                <div class="chart-header" style="padding: 12px 16px 0;">
+                    <h3 style="font-size: 1rem;"><i class="fas fa-chart-line" style="padding: 6px; font-size: 0.9rem;"></i> Trend Dana</h3>
+                </div>
+                <div class="chart-body" style="flex: 1; padding: 12px 20px 20px; min-height: 0; position: relative;">
+                    <div id="trendChart" style="width: 100%; height: 100%; min-height: 240px;"></div>
+                </div>
+            </div>
+            
+            <!-- CASH FLOW -->
+            <div class="chart-card compact-chart" style="display: flex; flex-direction: column; margin-bottom: 0;">
+                <div class="chart-header" style="padding: 12px 16px 0;">
+                    <h3 style="font-size: 1rem;"><i class="fas fa-chart-bar" style="padding: 6px; font-size: 0.9rem;"></i> Cash Flow Bulanan</h3>
+                </div>
+                <div class="chart-body" style="flex: 1; padding: 8px 16px 16px; min-height: 0; position: relative;">
+                    <div id="cashFlowChart" style="width: 100%; height: 100%; min-height: 220px;"></div>
+                </div>
+            </div>
+            
+            <!-- TOP KONTRIBUTOR -->
+            <div class="chart-card compact-chart" style="display: flex; flex-direction: column; margin-bottom: 0;">
+                <div class="chart-header" style="padding: 12px 16px 0;">
+                    <h3 style="font-size: 1rem;"><i class="fas fa-trophy" style="padding: 6px; font-size: 0.9rem; color: #f59e0b; background: #fef3c7;"></i> Top 5 Kontributor</h3>
+                </div>
+                <div class="chart-body" style="flex: 1; padding: 8px 16px 16px; min-height: 0; position: relative;">
+                    <div id="topInvestorChart" style="width: 100%; height: 100%; min-height: 200px;"></div>
+                </div>
+            </div>
+            
+            <!-- KOMPOSISI DANA -->
+            <div class="chart-card compact-chart" style="display: flex; flex-direction: column; margin-bottom: 0;">
+                <div class="chart-header" style="padding: 12px 16px 0;">
+                    <h3 style="font-size: 1rem;"><i class="fas fa-chart-pie" style="padding: 6px; font-size: 0.9rem;"></i> Komposisi Dana</h3>
+                </div>
+                <div class="chart-body" style="flex: 1; padding: 8px 16px 16px; min-height: 0; position: relative; display: flex; justify-content: center; align-items: center;">
+                    <div id="dashPieChart" style="width: 100%; height: 100%; min-height: 200px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. INSIGHT BOX -->
+        <div class="insight-box" id="miniInsights" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; margin-bottom: 12px; display: flex; justify-content: space-around; align-items: center; gap: 16px;">
+            <!-- Rendered by JS -->
+        </div>
+        
+        <!-- SCROLL INDICATOR -->
+        <div style="text-align: center; color: #94a3b8; font-size: 0.85rem; padding-bottom: 8px;">
+            <i class="fas fa-chevron-down"></i> Scroll untuk Riwayat Transaksi <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+
+    <!-- BELOW THE FOLD (SCROLL AREA) -->
+    <div class="chart-card full-width" style="margin-top: 24px;">
+        <div class="chart-header" style="padding: 20px 24px 0;">
+            <h3><i class="fas fa-history"></i> Riwayat Transaksi</h3>
+        </div>
+        <div class="table-wrapper" style="padding: 16px 24px 24px;">
+            <table class="data-table" id="recentTable">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Karyawan</th>
+                        <th>Jenis</th>
+                        <th>Nominal</th>
+                        <th>Tipe</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+  </section>
+
+  <!-- PAGE: KARYAWAN -->
+  <section class="page" id="page-karyawan">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="employeeSearch" placeholder="Cari nama karyawan..." autocomplete="off">
+    </div>
+    
+    <!-- Employee List -->
+    <div class="employee-list-container" id="employeeListContainer">
+      <h3>Daftar Karyawan</h3>
+      <div class="employee-list" id="fullEmployeeList"></div>
+    </div>
+
+    <div id="employeeDetail" class="employee-detail hidden">
+      <button class="btn btn-outline" id="btnBackToEmpList" style="margin-bottom: 16px;"><i class="fas fa-arrow-left"></i> Kembali ke Daftar</button>
+      <div class="emp-header" id="empHeader"></div>
+      
+      <!-- Smart Alerts Panel -->
+      <div id="empSmartAlerts" style="display:flex; flex-direction:column; gap:8px; margin-bottom: 24px;"></div>
+      
+      <div class="emp-cards" id="empCards"></div>
+      <div class="chart-row">
+        <div class="chart-card"><div class="chart-header"><h3><i class="fas fa-magic" style="color: #8b5cf6;"></i> Prediksi Saldo</h3></div>
+          <div class="chart-body"><div id="empForecastChart" style="width:100%; height:300px;"></div></div></div>
+        <div class="chart-card"><div class="chart-header"><h3><i class="fas fa-chart-doughnut"></i> Komposisi Modal vs Return</h3></div>
+          <div class="chart-body"><div id="empPieChart" style="width:100%; height:300px;"></div></div></div>
+      </div>
+      
+      <!-- Growth Section -->
+      <div class="chart-card full-width" style="margin-bottom: 24px;">
+        <div class="chart-header"><h3><i class="fas fa-chart-line"></i> Grafik Pertumbuhan Historis</h3></div>
+        <div class="chart-body"><div id="empChart" style="width:100%; height:300px;"></div></div>
+      </div>
+
+      <div class="chart-card full-width"><div class="chart-header"><h3><i class="fas fa-list"></i> Riwayat Transaksi</h3></div>
+        <div class="table-wrapper"><table class="data-table" id="empTable"><thead><tr>
+          <th>Tanggal</th><th>Keterangan</th><th>Nominal</th><th>Tipe</th><th>Sisa Saldo</th>
+        </tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE: TRANSAKSI -->
+  <section class="page" id="page-transaksi">
+    <div class="filter-bar">
+      <div class="search-box inline"><i class="fas fa-search"></i>
+        <input type="text" id="txSearch" placeholder="Cari transaksi..."></div>
+      <select id="txFilterType"><option value="">Semua Tipe</option><option value="Tabungan">Tabungan</option><option value="Penarikan">Penarikan</option></select>
+      <select id="txFilterMonth"><option value="">Semua Bulan</option></select>
+    </div>
+    <div class="chart-card full-width"><div class="table-wrapper">
+      <table class="data-table" id="txTable"><thead><tr>
+        <th class="sortable" data-col="0">No <i class="fas fa-sort"></i></th>
+        <th class="sortable" data-col="1">Tanggal <i class="fas fa-sort"></i></th>
+        <th class="sortable" data-col="2">Karyawan <i class="fas fa-sort"></i></th>
+        <th>Jenis Potongan</th>
+        <th class="sortable" data-col="4">Nominal <i class="fas fa-sort"></i></th>
+        <th>Tipe</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+    <div class="pagination" id="txPagination"></div>
+    </div>
+  </section>
+
+  <!-- PAGE: ANALYTICS -->
+  <section class="page" id="page-analytics">
+    <!-- KPI SECTION -->
+    <div id="analyticsKpis" class="summary-cards" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 24px;">
+      <!-- Dynamic KPIs -->
+    </div>
+
+    <!-- MAIN ROW: TREND & DISTRIBUTION -->
+    <div class="chart-row">
+      <div class="chart-card" style="flex: 2;">
+        <div class="chart-header">
+          <h3><i class="fas fa-chart-area"></i> Tren Akumulasi Dana</h3>
+          <div id="accumGrowthLabel" class="badge-status status-progress" style="font-size: 0.75rem;">+0% MoM</div>
+        </div>
+        <div class="chart-body"><div id="analyticsAccum" style="width: 100%; height: 350px;"></div></div>
+      </div>
+      <div class="chart-card" style="flex: 1.2;">
+        <div class="chart-header">
+          <h3><i class="fas fa-medal"></i> Top 10 Investor</h3>
+        </div>
+        <div class="chart-body"><div id="analyticsDistrib" style="width: 100%; height: 350px;"></div></div>
+      </div>
+    </div>
+
+    <!-- SECONDARY ROW: CASHFLOW & ALERTS -->
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3><i class="fas fa-exchange-alt"></i> Analisis Cash Flow</h3>
+        </div>
+        <div class="chart-body"><div id="analyticsCashFlow" style="width: 100%; height: 300px;"></div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3><i class="fas fa-bell"></i> Anomali & Alert</h3>
+        </div>
+        <div class="chart-body" id="analyticsAlerts" style="padding: 16px; overflow-y: auto; max-height: 300px;">
+          <!-- Dynamic Alerts -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ADVANCED ROW: SEGMENTATION & SMART INSIGHTS -->
+    <div class="chart-row">
+      <div class="chart-card" style="flex: 1;">
+        <div class="chart-header">
+          <h3><i class="fas fa-users-viewfinder"></i> Segmentasi Investor</h3>
+        </div>
+        <div class="chart-body"><div id="analyticsSegment" style="width: 100%; height: 280px;"></div></div>
+      </div>
+      <div class="chart-card" style="flex: 1.5; background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff; border: none;">
+        <div class="chart-header">
+          <h3 style="color: #fff;"><i class="fas fa-lightbulb" style="background: rgba(255,255,255,0.1); color: #facc15;"></i> Smart Insights</h3>
+        </div>
+        <div class="chart-body" id="smartInsights">
+          <!-- Dynamic Text Insights -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE: ANOMALI -->
+  <section class="page" id="page-anomali">
+    <div class="kpi-row" id="anomaliSummary" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px;">
+      <!-- Rendered by JS -->
+    </div>
+    <div class="chart-card full-width">
+      <div class="chart-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <h3><i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> Transaksi Penarikan Mencurigakan</h3>
+        <div style="display: flex; align-items: center; gap: 12px; flex: 1; justify-content: flex-end;">
+          <div class="search-box" style="max-width: 250px; flex: 1; margin: 0;">
+            <i class="fas fa-search"></i>
+            <input type="text" id="anomaliSearch" placeholder="Cari karyawan...">
+          </div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="data-table" id="anomaliTable">
+          <thead>
+            <tr>
+              <th class="sortable-anomali" data-col="0" style="cursor:pointer">Tanggal <i class="fas fa-sort"></i></th>
+              <th class="sortable-anomali" data-col="1" style="cursor:pointer">Karyawan <i class="fas fa-sort"></i></th>
+              <th class="sortable-anomali" data-col="2" style="cursor:pointer">Nominal Penarikan <i class="fas fa-sort"></i></th>
+              <th class="sortable-anomali" data-col="3" style="cursor:pointer">Saldo Sebelum <i class="fas fa-sort"></i></th>
+              <th class="sortable-anomali" data-col="4" style="cursor:pointer">Saldo Sesudah <i class="fas fa-sort"></i></th>
+              <th>Keterangan Anomali</th>
+              <th>Review Status</th>
+              <th>Notes</th>
+              <th>Reviewer</th>
+              <th>AKSI</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE: ADMIN -->
+  <section class="page" id="page-admin">
+    
+    <div class="admin-menu-cards" id="adminMenuCards">
+      <div class="admin-menu-card" data-target="adminFormUpdate">
+        <div class="admin-icon blue"><i class="fas fa-file-excel"></i></div>
+        <h3>Update Data</h3>
+        <p>Upload file Excel laporan transaksi terbaru</p>
+      </div>
+      <div class="admin-menu-card" data-target="adminFormTarik">
+        <div class="admin-icon red"><i class="fas fa-money-bill-wave"></i></div>
+        <h3>Penarikan Dana</h3>
+        <p>Proses penarikan tabungan dan cetak nota</p>
+      </div>
+    </div>
+
+    <div class="admin-forms-container hidden" id="adminFormsContainer">
+      <button class="btn btn-outline" id="btnBackToAdminMenu" style="margin-bottom: 20px;"><i class="fas fa-arrow-left"></i> Kembali ke Menu Utama</button>
+      
+      <div class="admin-grid" style="grid-template-columns: 1fr;">
+      <!-- Form 1: Update Data -->
+      <div class="chart-card admin-tab-content active" id="adminFormUpdate">
+        <div class="chart-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <h3 style="font-size: 1.25rem;"><i class="fas fa-file-excel"></i> Update Data (Upload)</h3>
+          <button class="btn btn-outline" id="btnDownloadTemplateUpdate" style="border-color: var(--primary); color: var(--primary); font-weight: 600; padding: 8px 16px; box-shadow: var(--shadow-sm);"><i class="fas fa-download"></i> Download Template Excel</button>
+        </div>
+        <div class="admin-form">
+          <div class="upload-zone" id="uploadZone">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Drag & drop file Excel atau <label for="excelFile" class="upload-link">pilih file</label></p>
+            <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" hidden>
+          </div>
+        </div>
+        <div id="previewSection" class="hidden" style="margin-top:16px;">
+          <h4>Preview Data (<span id="previewCount">0</span> baris)</h4>
+          <div class="table-wrapper"><table class="data-table" id="previewTable"><thead><tr>
+            <th>Bulan/Tahun</th><th>Karyawan</th><th>Jenis</th><th>Nominal</th>
+          </tr></thead><tbody></tbody></table></div>
+          <div class="btn-group" style="margin-top:12px;">
+            <button class="btn btn-primary" id="btnMerge"><i class="fas fa-save"></i> Simpan ke Spreadsheet</button>
+            <button class="btn btn-outline" id="btnCancelUpload"><i class="fas fa-times"></i> Batal</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form 2: Penarikan (Upload Excel) -->
+      <div class="chart-card admin-tab-content hidden" id="adminFormTarik">
+        <div class="chart-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <h3 style="font-size: 1.25rem;"><i class="fas fa-money-bill-wave"></i> Upload Data Penarikan</h3>
+          <button class="btn btn-outline" id="btnDownloadTemplateTarik" style="border-color: var(--success); color: var(--success); font-weight: 600; padding: 8px 16px; box-shadow: var(--shadow-sm);"><i class="fas fa-download"></i> Download Template Excel</button>
+        </div>
+        <div class="admin-form" style="padding: 24px;">
+          
+          <div style="background: var(--bg); border: 1px solid var(--border); padding: 20px; border-radius: 8px; margin-bottom: 24px;">
+            <h4 style="font-size: 1.15rem; color: var(--text); margin-bottom: 12px; font-weight: 700;"><i class="fas fa-info-circle" style="color: var(--primary);"></i> Panduan Singkat:</h4>
+            <ol style="margin-left: 20px; color: var(--text-light); font-size: 1.05rem; line-height: 1.7;">
+              <li>Klik tombol <strong>Download Template Excel</strong> di atas untuk menyimpan format kosong.</li>
+              <li>Buka file Excel tersebut, lalu isi data penarikan (Tanggal, Nama, Nominal).</li>
+              <li>Jika sudah selesai, unggah file.</li>
+            </ol>
+          </div>
+
+          <div class="upload-zone" id="uploadZoneTarik" style="padding: 50px 20px; border: 2px dashed var(--border); background: var(--surface); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; text-align: center;">
+            <i class="fas fa-file-excel" style="font-size: 4rem; color: var(--success); margin-bottom: 16px; transition: transform 0.3s;"></i>
+            <p style="font-size: 1.3rem; color: var(--text); font-weight: 700; margin-bottom: 8px;">Klik di sini untuk memilih file Excel</p>
+            <p style="font-size: 1rem; color: var(--text-light);">atau tarik dan lepas (drag & drop) file Anda ke area ini</p>
+            <input type="file" id="excelFileTarik" accept=".xlsx,.xls,.csv" hidden>
+          </div>
+          
+        </div>
+        
+        <div id="previewSectionTarik" class="hidden" style="padding: 0 24px 24px 24px;">
+          <h4 style="font-size: 1.2rem; color: var(--text); margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 12px; font-weight: 700;">Preview Data (<span id="previewCountTarik">0</span> baris)</h4>
+          <div class="table-wrapper" style="max-height: 300px; overflow-y: auto;">
+            <table class="data-table" id="previewTableTarik" style="font-size: 1.05rem;">
+              <thead style="position: sticky; top: 0; background: var(--bg); z-index: 10;">
+                <tr>
+                  <th>Bulan dan Tahun</th><th>Karyawan</th><th>Nominal</th><th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="btn-group" style="margin-top: 24px; gap: 16px; flex-wrap: wrap;">
+            <button class="btn btn-danger" id="btnMergeTarik" style="flex: 2; padding: 16px; font-size: 1.15rem; font-weight: 700; border-radius: 8px; min-width: 250px;"><i class="fas fa-save"></i> Simpan Data Penarikan</button>
+            <button class="btn btn-outline" id="btnCancelUploadTarik" style="flex: 1; padding: 16px; font-size: 1.15rem; font-weight: 600; border-radius: 8px; min-width: 150px;"><i class="fas fa-times"></i> Batal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+</main>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- MODAL: REVIEW ANOMALI -->
+<div id="modalReview" class="modal-overlay hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-clipboard-check"></i> Review Transaksi Mencurigakan</h3>
+      <button class="btn-close" id="btnCloseModal"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="review-tx-info" id="reviewTxInfo">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="form-group" style="margin-top: 20px;">
+        <label>Update Status:</label>
+        <div class="status-options" id="statusOptionsGroup">
+          <label class="status-opt"><input type="radio" name="reviewStatus" value="In Progress"> <span>Masih Progres</span></label>
+          <label class="status-opt"><input type="radio" name="reviewStatus" value="Verified"> <span>Terbukti</span></label>
+          <label class="status-opt"><input type="radio" name="reviewStatus" value="Salah Orang"> <span>Koreksi (Salah Orang)</span></label>
+        </div>
+      </div>
+      <div id="correctionFields" class="hidden" style="margin-top: 20px; background: rgba(245, 158, 11, 0.05); padding: 16px; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2);">
+        <h4 style="font-size: 0.9rem; color: #b45309; margin-bottom: 12px;"><i class="fas fa-edit"></i> Koreksi Data Karyawan</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="position: relative;">
+            <label for="correctName" style="font-size: 0.8rem; font-weight: 600; color: #64748b;">Nama yang Benar:</label>
+            <input type="text" id="correctName" class="form-input" style="padding: 8px 12px;" placeholder="Nama Karyawan" autocomplete="off">
+            <div id="correctNameResults" class="search-results" style="top: 100%; font-size: 0.9rem;"></div>
+          </div>
+          <div>
+            <label for="correctNik" style="font-size: 0.8rem; font-weight: 600; color: #64748b;">NIK/KTP yang Benar:</label>
+            <input type="text" id="correctNik" class="form-input" style="padding: 8px 12px;" placeholder="NIK/KTP">
+          </div>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top: 20px;">
+        <label for="reviewNotes">Reviewer Notes:</label>
+        <textarea id="reviewNotes" class="form-input" style="height: 80px; resize: none;" placeholder="Tambahkan catatan hasil investigasi..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer" style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+      <button class="btn btn-outline" id="btnCancelReview">Batal</button>
+      <button class="btn btn-primary" id="btnSaveReview"><i class="fas fa-save"></i> Simpan Status</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

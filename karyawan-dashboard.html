@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ringkasan Investasi - Dashboard Karyawan</title>
+    <meta name="description" content="Dashboard ringkasan investasi karyawan yang simpel dan modern">
+    
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/karyawan.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>Ringkasan Investasi Anda</h1>
+                    <p class="subtitle">Update terakhir: <span id="currentDate">Memuat...</span></p>
+                </div>
+                <div class="profile-pic">
+                    <img src="https://ui-avatars.com/api/?name=Karyawan&background=ffffff&color=2563eb&bold=true" alt="Profile">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- 1. Balance Section (3 Cards) -->
+            <section class="balance-section">
+                <!-- Total Saldo -->
+                <div class="card main-balance-card fade-in">
+                    <h2>Total Saldo</h2>
+                    <div class="balance-amount">Rp 45,2 Jt</div>
+                    <div class="balance-indicator positive">
+                        <i class="fas fa-arrow-up"></i> +Rp 2,1 Jt dari bulan lalu
+                    </div>
+                </div>
+                
+                <!-- Uang Masuk & Keluar -->
+                <div class="secondary-balances">
+                    <div class="card mini-card fade-in delay-1">
+                        <div class="card-icon income"><i class="fas fa-arrow-down"></i></div>
+                        <div class="card-info">
+                            <p>Uang Masuk</p>
+                            <h3>Rp 3,5 Jt</h3>
+                        </div>
+                    </div>
+                    <div class="card mini-card fade-in delay-2">
+                        <div class="card-icon expense"><i class="fas fa-arrow-up"></i></div>
+                        <div class="card-info">
+                            <p>Uang Keluar</p>
+                            <h3>Rp 1,4 Jt</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Chart Section -->
+            <section class="chart-section">
+                <div class="card fade-in delay-3">
+                    <div class="card-header">
+                        <h3>Perkembangan Saldo</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="balanceChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Composition Section -->
+            <section class="composition-section">
+                <div class="card fade-in delay-4">
+                    <div class="card-header">
+                        <h3>Komposisi Dana</h3>
+                    </div>
+                    <div class="composition-bars">
+                        <div class="comp-item">
+                            <div class="comp-labels">
+                                <span>Setoran Pokok</span>
+                                <span class="comp-value">Rp 40 Jt</span>
+                            </div>
+                            <div class="progress-bg">
+                                <div class="progress-fill primary" style="width: 88%;"></div>
+                            </div>
+                        </div>
+                        <div class="comp-item">
+                            <div class="comp-labels">
+                                <span>Bunga / Keuntungan</span>
+                                <span class="comp-value">Rp 5,2 Jt</span>
+                            </div>
+                            <div class="progress-bg">
+                                <div class="progress-fill secondary" style="width: 12%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Top Investors -->
+            <section class="leaderboard-section">
+                <div class="card fade-in delay-5">
+                    <div class="card-header">
+                        <h3>Top 5 Investor Bulan Ini <i class="fas fa-trophy" style="color:#fbbf24; margin-left: 6px;"></i></h3>
+                    </div>
+                    <ul class="leaderboard-list">
+                        <li class="leader-item">
+                            <div class="leader-rank rank-1">1</div>
+                            <div class="leader-info">
+                                <h4>Budi Santoso</h4>
+                                <p>Rp 15,0 Jt</p>
+                            </div>
+                        </li>
+                        <li class="leader-item">
+                            <div class="leader-rank rank-2">2</div>
+                            <div class="leader-info">
+                                <h4>Andi Wijaya</h4>
+                                <p>Rp 12,5 Jt</p>
+                            </div>
+                        </li>
+                        <li class="leader-item">
+                            <div class="leader-rank rank-3">3</div>
+                            <div class="leader-info">
+                                <h4>Siti Aminah</h4>
+                                <p>Rp 11,0 Jt</p>
+                            </div>
+                        </li>
+                        <li class="leader-item highlight">
+                            <div class="leader-rank">4</div>
+                            <div class="leader-info">
+                                <h4>Anda (Karyawan)</h4>
+                                <p>Rp 8,0 Jt</p>
+                            </div>
+                        </li>
+                        <li class="leader-item">
+                            <div class="leader-rank">5</div>
+                            <div class="leader-info">
+                                <h4>Rudi Hermawan</h4>
+                                <p>Rp 7,5 Jt</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 5. Transaction History -->
+            <section class="history-section">
+                <div class="card fade-in delay-6">
+                    <div class="card-header">
+                        <h3>Riwayat Transaksi</h3>
+                        <a href="#" class="view-all">Lihat Semua</a>
+                    </div>
+                    
+                    <!-- Group Hari Ini -->
+                    <div class="history-group">
+                        <h4 class="group-date">Hari Ini</h4>
+                        <div class="history-item">
+                            <div class="hist-icon success"><i class="fas fa-arrow-down"></i></div>
+                            <div class="hist-details">
+                                <h4>Setoran Bulanan</h4>
+                                <p>09:41 WIB</p>
+                            </div>
+                            <div class="hist-amount positive">+Rp 1.000.000</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Group Kemarin -->
+                    <div class="history-group">
+                        <h4 class="group-date">Kemarin</h4>
+                        <div class="history-item">
+                            <div class="hist-icon danger"><i class="fas fa-arrow-up"></i></div>
+                            <div class="hist-details">
+                                <h4>Penarikan Dana</h4>
+                                <p>14:20 WIB</p>
+                            </div>
+                            <div class="hist-amount negative">-Rp 500.000</div>
+                        </div>
+                        <div class="history-item">
+                            <div class="hist-icon success"><i class="fas fa-arrow-down"></i></div>
+                            <div class="hist-details">
+                                <h4>Bunga Investasi</h4>
+                                <p>00:01 WIB</p>
+                            </div>
+                            <div class="hist-amount positive">+Rp 45.000</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Custom Script -->
+    <script src="js/karyawan.js"></script>
+</body>
+</html>
